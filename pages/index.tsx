@@ -8,6 +8,7 @@ import { withUrqlClient } from 'next-urql'
 import Nav from '../components/nav'
 import Pokemon from '../components/pokemon'
 
+/*
 const query = gql`
   {
     pokemon(name: "Kabuto") {
@@ -17,12 +18,22 @@ const query = gql`
     }
   }
 `
+ */
 
+const query = gql`
+query MyQuery {
+  pokemon {
+    number
+    name
+    image
+  }
+}
+`
 const Home = () => {
   const [res] = useQuery({
     query
   })
-
+  console.log('res===>', res)
   return (
     <div>
       <Head>
@@ -33,14 +44,10 @@ const Home = () => {
       <Nav />
 
       <Flex width="100vw" justifyContent="center">
-        {res.fetching ? (
-          <Text>Loading...</Text>
-        ) : (
-          <Pokemon {...res.data.pokemon} />
-        )}
+        {res.fetching ? ( <Text>Loading...</Text>) : ( <Pokemon {...res.data.pokemon[0]} />)}
       </Flex>
     </div>
   )
 }
 
-export default withUrqlClient({ url: 'https://graphql-pokemon.now.sh/' })(Home)
+export default withUrqlClient({ url: 'http://localhost:8080/v1/graphql'  })(Home)
